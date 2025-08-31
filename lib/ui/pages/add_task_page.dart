@@ -36,7 +36,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: context.theme.backgroundColor,
+      backgroundColor: context.theme.scaffoldBackgroundColor,
       appBar: _appBar(),
       body: Container(
         padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -213,7 +213,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
         ),
       ),
       elevation: 0.0,
-      backgroundColor: context.theme.backgroundColor,
+      backgroundColor: context.theme.scaffoldBackgroundColor,
       centerTitle: true,
       actions: const [
         CircleAvatar(

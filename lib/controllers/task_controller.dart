@@ -1,33 +1,95 @@
+import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:todo/db/db_helper.dart';
 import 'package:todo/models/task.dart';
 
 class TaskController extends GetxController {
   final RxList<Task> taskList = <Task>[].obs;
+  final RxBool isLoading = false.obs;
+  final RxString errorMessage = ''.obs;
 
-  Future<int> addTask({Task? task}) {
-    return DBHelper.insert(task);
+  @override
+  void onInit() {
+    super.onInit();
+    getTasks();
   }
 
-//get data from database
+  Future<int> addTask({required Task task}) async {
+    try {
+      isLoading.value = true;
+      errorMessage.value = '';
+      final result = await DBHelper.insert(task);
+      await getTasks();
+      return result;
+    } catch (e) {
+      errorMessage.value = 'Failed to add task: $e';
+      rethrow;
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  // Get data from database
   Future<void> getTasks() async {
-    final List<Map<String, dynamic>> tasks = await DBHelper.query();
-    taskList.assignAll(tasks.map((data) => Task.fromJson(data)).toList());
+    try {
+      isLoading.value = true;
+      errorMessage.value = '';
+      final List<Map<String, dynamic>> tasks = await DBHelper.query();
+      taskList.assignAll(tasks.map((data) => Task.fromJson(data)).toList());
+    } catch (e) {
+      errorMessage.value = 'Failed to load tasks: $e';
+      debugPrint('Error getting tasks: $e');
+    } finally {
+      isLoading.value = false;
+    }
   }
 
-//delete tasks from database
-  void deleteTasks(Task task) async {
-    await DBHelper.delete(task);
-    getTasks();
+  // Delete tasks from database
+  Future<void> deleteTasks(Task task) async {
+    try {
+      isLoading.value = true;
+      errorMessage.value = '';
+      await DBHelper.delete(task);
+      await getTasks();
+    } catch (e) {
+      errorMessage.value = 'Failed to delete task: $e';
+      debugPrint('Error deleting task: $e');
+    } finally {
+      isLoading.value = false;
+    }
   }
-//delete All tasks make ui clear
-void deleteAllTasks() async {
-    await DBHelper.deleteAll();
-    getTasks();
+
+  // Delete All tasks make UI clear
+  Future<void> deleteAllTasks() async {
+    try {
+      isLoading.value = true;
+      errorMessage.value = '';
+      await DBHelper.deleteAll();
+      await getTasks();
+    } catch (e) {
+      errorMessage.value = 'Failed to delete all tasks: $e';
+      debugPrint('Error deleting all tasks: $e');
+    } finally {
+      isLoading.value = false;
+    }
   }
-//update task mark
-  void markAsCompleted(int id) async {
-    await DBHelper.update(id);
-    getTasks();
+
+  // Update task mark
+  Future<void> markAsCompleted(int id) async {
+    try {
+      isLoading.value = true;
+      errorMessage.value = '';
+      await DBHelper.update(id);
+      await getTasks();
+    } catch (e) {
+      errorMessage.value = 'Failed to update task: $e';
+      debugPrint('Error updating task: $e');
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  void clearError() {
+    errorMessage.value = '';
   }
 }

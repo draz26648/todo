@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:flutter_native_timezone/flutter_native_timezone.dart';
+// import 'package:flutter_native_timezone/flutter_native_timezone.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:rxdart/rxdart.dart';
@@ -23,12 +23,11 @@ class NotifyHelper {
     _configureSelectNotificationSubject();
     await _configureLocalTimeZone();
     // await requestIOSPermissions(flutterLocalNotificationsPlugin);
-    final IOSInitializationSettings initializationSettingsIOS =
-        IOSInitializationSettings(
+    const DarwinInitializationSettings initializationSettingsIOS =
+        DarwinInitializationSettings(
       requestSoundPermission: false,
       requestBadgePermission: false,
       requestAlertPermission: false,
-      onDidReceiveLocalNotification: onDidReceiveLocalNotification,
     );
 
     const AndroidInitializationSettings initializationSettingsAndroid =
@@ -41,30 +40,36 @@ class NotifyHelper {
     );
     await flutterLocalNotificationsPlugin.initialize(
       initializationSettings,
-      onSelectNotification: (String? payload) async {
-        if (payload != null) {
-          debugPrint('notification payload: ' + payload);
+      onDidReceiveNotificationResponse: (NotificationResponse response) async {
+        if (response.payload != null) {
+          debugPrint('notification payload: ${response.payload}');
         }
-        selectNotificationSubject.add(payload!);
+        selectNotificationSubject.add(response.payload ?? '');
       },
     );
   }
 
   displayNotification({required String title, required String body}) async {
-    print('doing test');
-    var androidPlatformChannelSpecifics = const AndroidNotificationDetails(
-        'your channel id', 'your channel name', 'your channel description',
-        importance: Importance.max, priority: Priority.high);
-    var iOSPlatformChannelSpecifics = const IOSNotificationDetails();
-    var platformChannelSpecifics = NotificationDetails(
-        android: androidPlatformChannelSpecifics,
-        iOS: iOSPlatformChannelSpecifics);
+    debugPrint('doing test');
+    const AndroidNotificationDetails androidPlatformChannelSpecifics =
+        AndroidNotificationDetails(
+      'your channel id',
+      'your channel name',
+      importance: Importance.max,
+      priority: Priority.high,
+    );
+    const DarwinNotificationDetails iOSPlatformChannelSpecifics =
+        DarwinNotificationDetails();
+    const NotificationDetails platformChannelSpecifics = NotificationDetails(
+      android: androidPlatformChannelSpecifics,
+      iOS: iOSPlatformChannelSpecifics,
+    );
+
     await flutterLocalNotificationsPlugin.show(
       0,
       title,
       body,
       platformChannelSpecifics,
-      payload: 'Default_Sound',
     );
   }
 
@@ -83,16 +88,13 @@ class NotifyHelper {
       task.id!,
       task.title,
       task.note,
-      //tz.TZDateTime.now(tz.local).add(const Duration(seconds: 5)),
       _nextInstanceOfTenAM(
           hour, minutes, task.remind!, task.repeat!, task.date!),
       const NotificationDetails(
-        android: AndroidNotificationDetails(
-            'your channel id', 'your channel name', 'your channel description'),
+        android:
+            AndroidNotificationDetails('your channel id', 'your channel name'),
       ),
-      androidAllowWhileIdle: true,
-      uiLocalNotificationDateInterpretation:
-          UILocalNotificationDateInterpretation.absoluteTime,
+      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
       matchDateTimeComponents: DateTimeComponents.time,
       payload: '${task.title}|${task.note}|${task.startTime}|',
     );
@@ -168,8 +170,8 @@ class NotifyHelper {
 
   Future<void> _configureLocalTimeZone() async {
     tz.initializeTimeZones();
-    final String timeZoneName = await FlutterNativeTimezone.getLocalTimezone();
-    tz.setLocalLocation(tz.getLocation(timeZoneName));
+    // Use the system's local timezone directly
+    tz.setLocalLocation(tz.local);
   }
 
 //Older IOS

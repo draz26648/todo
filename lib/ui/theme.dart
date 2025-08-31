@@ -12,13 +12,27 @@ const Color darkHeaderClr = Color(0xFF424242);
 
 class Themes {
   static final light = ThemeData(
-      primaryColor: primaryClr,
-      backgroundColor: white,
-      brightness: Brightness.light);
+    useMaterial3: true,
+    colorScheme: ColorScheme.fromSeed(
+      seedColor: primaryClr,
+      brightness: Brightness.light,
+    ),
+    primaryColor: primaryClr,
+    scaffoldBackgroundColor: white,
+    brightness: Brightness.light,
+    textTheme: GoogleFonts.latoTextTheme(),
+  );
+
   static final dark = ThemeData(
+    useMaterial3: true,
+    colorScheme: ColorScheme.fromSeed(
+      seedColor: primaryClr,
+      brightness: Brightness.dark,
+    ),
     primaryColor: darkGreyClr,
-    backgroundColor: darkGreyClr,
+    scaffoldBackgroundColor: darkGreyClr,
     brightness: Brightness.dark,
+    textTheme: GoogleFonts.latoTextTheme(),
   );
 }
 

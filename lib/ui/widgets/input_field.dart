@@ -5,12 +5,12 @@ import '../theme.dart';
 
 class InputField extends StatelessWidget {
   const InputField({
-    Key? key,
+    super.key,
     required this.title,
     required this.hint,
     this.controller,
     this.child,
-  }) : super(key: key);
+  });
 
   final String title;
   final String hint;
@@ -52,18 +52,18 @@ class InputField extends StatelessWidget {
                     decoration: InputDecoration(
                       hintText: hint,
                       hintStyle: subTitleStyle,
-                      enabledBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(
-                          color: context.theme.backgroundColor,
-                          width: 0.0,
+                                              enabledBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(
+                            color: context.theme.scaffoldBackgroundColor,
+                            width: 0.0,
+                          ),
                         ),
-                      ),
-                      focusedBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(
-                          color: context.theme.backgroundColor,
-                          width: 0.0,
+                        focusedBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(
+                            color: context.theme.scaffoldBackgroundColor,
+                            width: 0.0,
+                          ),
                         ),
-                      ),
                     ),
                   ),
                 ),

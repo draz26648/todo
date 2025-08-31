@@ -13,7 +13,7 @@ import 'package:intl/intl.dart';
 import 'package:todo/controllers/task_controller.dart';
 
 import 'package:todo/models/task.dart';
-import 'package:todo/services/notification_services.dart';
+// import 'package:todo/services/notification_services.dart';
 import 'package:todo/services/theme_services.dart';
 import 'package:todo/ui/pages/add_task_page.dart';
 import 'package:todo/ui/size_config.dart';
@@ -30,14 +30,14 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  late NotifyHelper notifyHelper;
+  // late NotifyHelper notifyHelper;
   @override
   void initState() {
     super.initState();
-    notifyHelper = NotifyHelper();
+    // notifyHelper = NotifyHelper();
 
-    notifyHelper.requestIOSPermissions();
-    notifyHelper.initializeNotification();
+    // notifyHelper.requestIOSPermissions();
+    // notifyHelper.initializeNotification();
     _taskController.getTasks();
   }
 
@@ -48,7 +48,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     SizeConfig().init(context);
     return Scaffold(
-      backgroundColor: context.theme.backgroundColor,
+      backgroundColor: context.theme.scaffoldBackgroundColor,
       appBar: _appBar(),
       body: Column(
         children: [
@@ -76,13 +76,13 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
       elevation: 0.0,
-      backgroundColor: context.theme.backgroundColor,
+      backgroundColor: context.theme.scaffoldBackgroundColor,
       centerTitle: true,
       actions: [
         IconButton(
           onPressed: () {
             _taskController.deleteAllTasks();
-            notifyHelper.cancelAllNotifications();
+            // notifyHelper.cancelAllNotifications();
             Get.snackbar(
               'Delete',
               'All Tasks Deleted!',
@@ -215,11 +215,11 @@ class _HomePageState extends State<HomePage> {
                   var date = DateFormat.jm().parse(task.startTime!);
                   var time = DateFormat('HH:mm').format(date);
 
-                  notifyHelper.scheduledNotification(
-                    int.parse(time.toString().split(':')[0]),
-                    int.parse(time.toString().split(':')[1]),
-                    task,
-                  );
+                  // notifyHelper.scheduledNotification(
+                  //   int.parse(time.toString().split(':')[0]),
+                  //   int.parse(time.toString().split(':')[1]),
+                  //   task,
+                  // );
                   return AnimationConfiguration.staggeredList(
                     position: index,
                     duration: const Duration(milliseconds: 900),
@@ -333,7 +333,7 @@ class _HomePageState extends State<HomePage> {
                       lable: 'Task Completed',
                       onTap: () {
                         _taskController.markAsCompleted(task.id!);
-                        notifyHelper.cancelNotifications(task);
+                        // notifyHelper.cancelNotifications(task);
                         Get.back();
                       },
                       clr: primaryClr,
@@ -342,7 +342,7 @@ class _HomePageState extends State<HomePage> {
                 lable: 'Delete Task',
                 onTap: () {
                   _taskController.deleteTasks(task);
-                  notifyHelper.cancelNotifications(task);
+                  // notifyHelper.cancelNotifications(task);
                   Get.back();
                 },
                 clr: Colors.red[400]!,
