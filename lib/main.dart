@@ -5,9 +5,18 @@ import 'package:todo/db/db_helper.dart';
 import 'package:todo/services/theme_services.dart';
 import 'package:todo/ui/theme.dart';
 import 'ui/pages/home_page.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+
+// ...
+
+await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+);
   
   try {
     await DBHelper.initDb(); // Initialize database when app starts
